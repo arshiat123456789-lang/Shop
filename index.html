@@ -1,0 +1,1169 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="page-title">فروشگاه پلاس</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        sky: { 50: '#f0f9ff', 100: '#e0f2fe', 500: '#0ea5e9', 600: '#0284c7', 700: '#0369a1' }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;700;900&display=swap');
+        body { font-family: 'Vazirmatn', sans-serif; background-color: #f8fafc; color: #1e293b; }
+        .hide { display: none !important; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between">
+
+    <!-- Navbar -->
+    <header class="bg-sky-600 text-white shadow-md sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <i class="fa-solid fa-store text-2xl"></i>
+                <h1 id="store-brand-name" class="text-xl font-bold tracking-wide">فروشگاه پلاس</h1>
+            </div>
+            <div class="flex items-center gap-3">
+                <button onclick="openCartModal()" class="relative bg-sky-700 hover:bg-sky-800 px-3 py-2 rounded-xl text-sm font-medium transition flex items-center gap-2">
+                    <i class="fa-solid fa-cart-shopping"></i> سبد خرید
+                    <span id="cart-badge" class="absolute -top-2 -right-2 bg-red-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center font-bold">0</span>
+                </button>
+                <button id="nav-auth-btn" onclick="openAuthModal()" class="bg-white text-sky-700 hover:bg-sky-50 px-4 py-2 rounded-xl text-sm font-bold transition shadow-sm">ورود / ثبت‌نام</button>
+                <button id="nav-admin-btn" onclick="openAdminLoginModal()" class="bg-sky-800 hover:bg-sky-900 px-3 py-2 rounded-xl text-sm font-medium transition"><i class="fa-solid fa-user-shield"></i></button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-6 flex-grow">
+        <!-- Hero Section -->
+        <div class="bg-gradient-to-r from-sky-500 to-sky-700 text-white rounded-3xl p-8 mb-8 shadow-lg flex flex-col md:flex-row justify-between items-center gap-6">
+            <div>
+                <h2 id="hero-title" class="text-3xl md:text-4xl font-black mb-3">به فروشگاه پلاس خوش آمدید</h2>
+                <p id="hero-desc" class="text-sky-100 text-sm md:text-base max-w-xl">بهترین محصولات با بالاترین کیفیت، ارسال سریع و پشتیبانی ۲۴ ساعته. همین حالا حساب کاربری بسازید و خرید کنید!</p>
+            </div>
+            <div class="bg-white/10 backdrop-blur-md p-6 rounded-2xl border border-white/20 text-center min-w-[220px]">
+                <p class="text-xs text-sky-100 mb-1">پشتیبانی اختصاصی ۲۴ ساعته</p>
+                <p id="support-phone-display" class="text-lg font-black tracking-wider">09120000000</p>
+            </div>
+        </div>
+
+        <!-- Search & Filter Bar -->
+        <div class="flex flex-col md:flex-row justify-between items-center gap-4 mb-8">
+            <div class="w-full md:w-96 relative">
+                <input type="text" id="search-input" oninput="renderProducts()" placeholder="جستجوی محصول..." class="w-full bg-white border border-slate-200 rounded-2xl py-3 pr-10 pl-4 text-sm focus:outline-none focus:border-sky-500 shadow-sm">
+                <i class="fa-solid fa-magnifying-glass absolute right-4 top-4 text-slate-400"></i>
+            </div>
+            <div class="flex gap-2 w-full md:w-auto overflow-x-auto pb-2 md:pb-0">
+                <button onclick="setFilter('all')" id="filter-all" class="px-4 py-2 rounded-xl text-sm font-bold bg-sky-600 text-white shadow-sm transition">همه محصولات</button>
+                <button onclick="setFilter('normal')" id="filter-normal" class="px-4 py-2 rounded-xl text-sm font-bold bg-white text-slate-600 hover:bg-slate-100 border border-slate-200 transition">معمولی</button>
+                <button onclick="setFilter('premium')" id="filter-premium" class="px-4 py-2 rounded-xl text-sm font-bold bg-amber-500 text-white shadow-sm transition"><i class="fa-solid fa-crown"></i> پرمیوم</button>
+            </div>
+        </div>
+
+        <!-- Products Grid -->
+        <div id="products-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <!-- Dynamic Products -->
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 py-8 border-t border-slate-800 mt-12">
+        <div class="container mx-auto px-4 text-center text-sm">
+            <p id="footer-text" class="mb-2">تمامی حقوق برای فروشگاه پلاس محفوظ است.</p>
+            <p class="text-xs text-slate-500">پشتیبانی ۲۴ ساعته آنلاین | امنیت کامل در تراکنش‌ها</p>
+        </div>
+    </footer>
+
+    <!-- Auth Modal (Login / Signup) -->
+    <div id="auth-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hide">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl relative animate-scale">
+            <button onclick="closeAuthModal()" class="absolute left-6 top-6 text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-xl"></i></button>
+            <div class="text-center mb-6">
+                <div class="w-16 h-16 bg-sky-100 text-sky-600 rounded-2xl flex items-center justify-center mx-auto mb-3 text-2xl font-bold"><i class="fa-solid fa-user-lock"></i></div>
+                <h3 id="auth-modal-title" class="text-xl font-bold text-slate-800">ورود به حساب کاربری</h3>
+                <p class="text-xs text-slate-500 mt-1">جهت خرید و ثبت سفارش لطفاً وارد شوید یا ثبت‌نام کنید</p>
+            </div>
+
+            <div id="auth-error-box" class="bg-red-50 border border-red-200 text-red-600 text-xs p-3 rounded-xl mb-4 hide"></div>
+
+            <form id="auth-form" onsubmit="handleAuthSubmit(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">نام کاربری</label>
+                    <input type="text" id="auth-username" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-sky-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">رمز عبور</label>
+                    <input type="password" id="auth-password" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-sky-500">
+                </div>
+                <div id="auth-extra-field" class="hide">
+                    <label class="block text-xs font-bold text-slate-700 mb-1">کد تایید (شبیه‌ساز)</label>
+                    <div class="flex gap-2">
+                        <input type="text" id="auth-code" placeholder="کد ۵ رقمی" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-sky-500">
+                        <button type="button" onclick="sendVerificationCode()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 px-4 rounded-xl text-xs font-bold whitespace-nowrap">ارسال کد</button>
+                    </div>
+                </div>
+                <div class="flex items-center justify-between text-xs">
+                    <label class="flex items-center gap-2 cursor-pointer">
+                        <input type="checkbox" id="remember-me" class="rounded text-sky-600 focus:ring-sky-500"> مرا به خاطر بسپار
+                    </label>
+                    <button type="button" onclick="handleForgotPassword()" class="text-sky-600 hover:underline font-medium">فراموشی رمز عبور؟</button>
+                </div>
+                <button type="submit" id="auth-submit-btn" class="w-full bg-sky-600 hover:bg-sky-700 text-white font-bold py-3 rounded-xl transition shadow-lg shadow-sky-500/30">ورود به حساب</button>
+            </form>
+
+            <div class="text-center mt-6 text-xs">
+                <span id="auth-switch-text" class="text-slate-500">حساب کاربری ندارید؟</span>
+                <button type="button" onclick="toggleAuthMode()" id="auth-switch-btn" class="text-sky-600 font-bold mr-1 hover:underline">ثبت‌نام کنید</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Login Modal -->
+    <div id="admin-login-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hide">
+        <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl relative">
+            <button onclick="closeAdminLoginModal()" class="absolute left-5 top-5 text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+            <div class="text-center mb-6">
+                <div class="w-14 h-14 bg-slate-900 text-white rounded-2xl flex items-center justify-center mx-auto mb-3 text-xl"><i class="fa-solid fa-shield-halved"></i></div>
+                <h3 class="text-lg font-bold text-slate-800">ورود مدیریت</h3>
+                <p class="text-xs text-slate-500 mt-1">رمز عبور پیش‌فرض: Arshia.t1300</p>
+            </div>
+            <form onsubmit="handleAdminLoginSubmit(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">رمز عبور مدیریت</label>
+                    <input type="password" id="admin-password-input" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-slate-900" placeholder="••••••••••••">
+                </div>
+                <button type="submit" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3 rounded-xl transition">ورود به پنل مدیریت</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Admin Panel Modal -->
+    <div id="admin-panel-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hide">
+        <div class="bg-white rounded-3xl max-w-4xl w-full max-h-[90vh] flex flex-col shadow-2xl relative overflow-hidden">
+            <div class="bg-slate-900 text-white px-6 py-4 flex justify-between items-center">
+                <div class="flex items-center gap-3">
+                    <i class="fa-solid fa-sliders text-xl text-sky-400"></i>
+                    <h3 class="font-bold text-lg">پنل مدیریت پیشرفته فروشگاه</h3>
+                </div>
+                <button onclick="closeAdminPanel()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
+            </div>
+            
+            <!-- Admin Tabs -->
+            <div class="flex border-b border-slate-200 bg-slate-50 px-6 gap-4 overflow-x-auto">
+                <button onclick="switchAdminTab('products')" id="adm-tab-products" class="py-3 px-4 font-bold text-sm border-b-2 border-sky-600 text-sky-600 whitespace-nowrap">مدیریت محصولات</button>
+                <button onclick="switchAdminTab('orders')" id="adm-tab-orders" class="py-3 px-4 font-bold text-sm text-slate-500 whitespace-nowrap">سفارش‌های دریافتی</button>
+                <button onclick="switchAdminTab('users')" id="adm-tab-users" class="py-3 px-4 font-bold text-sm text-slate-500 whitespace-nowrap">کاربران ثبت‌نامی</button>
+                <button onclick="switchAdminTab('settings')" id="adm-tab-settings" class="py-3 px-4 font-bold text-sm text-slate-500 whitespace-nowrap">تنظیمات فروشگاه</button>
+            </div>
+
+            <!-- Admin Content Area -->
+            <div class="p-6 overflow-y-auto flex-grow space-y-6">
+                <!-- Tab 1: Products -->
+                <div id="admin-content-products" class="space-y-6">
+                    <div class="bg-sky-50 border border-sky-200 p-4 rounded-2xl">
+                        <h4 class="font-bold text-sky-900 mb-3 text-sm"><i class="fa-solid fa-plus-circle ml-2"></i>افزودن محصول جدید</h4>
+                        <form onsubmit="handleAddProduct(event)" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+                            <input type="text" id="p-name" placeholder="نام محصول" required class="bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-sky-500">
+                            <input type="number" id="p-price" placeholder="قیمت (تومان)" required class="bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-sky-500">
+                            <input type="number" id="p-stock" placeholder="تعداد موجودی انبار" required class="bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-sky-500">
+                            <input type="text" id="p-image" placeholder="لینک تصویر (URL)" required class="bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-sky-500">
+                            <select id="p-type" class="bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-sky-500">
+                                <option value="normal">محصول معمولی</option>
+                                <option value="premium">محصول پرمیوم (ارسال رایگان + تخفیف)</option>
+                            </select>
+                            <input type="text" id="p-desc" placeholder="توضیحات کامل محصول" required class="bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-sky-500 sm:col-span-2">
+                            <button type="submit" class="bg-sky-600 hover:bg-sky-700 text-white font-bold rounded-xl py-2 text-xs transition shadow-md sm:col-span-1">ثبت و افزودن محصول</button>
+                        </form>
+                    </div>
+
+                    <div>
+                        <h4 class="font-bold text-slate-800 mb-3 text-sm">لیست محصولات موجود در فروشگاه</h4>
+                        <div id="admin-products-list" class="space-y-3"></div>
+                    </div>
+                </div>
+
+                <!-- Tab 2: Orders -->
+                <div id="admin-content-orders" class="hide space-y-4">
+                    <h4 class="font-bold text-slate-800 text-sm">سفارش‌های ثبت شده مشتریان (ارسال خودکار به مدیر)</h4>
+                    <div id="admin-orders-list" class="space-y-3"></div>
+                </div>
+
+                <!-- Tab 3: Users -->
+                <div id="admin-content-users" class="hide space-y-4">
+                    <h4 class="font-bold text-slate-800 text-sm">لیست حساب‌های کاربری ثبت‌نام شده (حفظ حریم خصوصی رمز عبور)</h4>
+                    <div id="admin-users-list" class="space-y-3"></div>
+                </div>
+
+                <!-- Tab 4: Settings -->
+                <div id="admin-content-settings" class="hide space-y-6 max-w-lg">
+                    <div class="bg-slate-50 border border-slate-200 p-4 rounded-2xl space-y-4">
+                        <h4 class="font-bold text-slate-800 text-sm">تغییر نام فروشگاه</h4>
+                        <input type="text" id="setting-store-name" class="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none">
+                        <button onclick="updateStoreName()" class="bg-slate-900 text-white text-xs font-bold px-4 py-2 rounded-xl">ذخیره نام</button>
+                    </div>
+
+                    <div class="bg-slate-50 border border-slate-200 p-4 rounded-2xl space-y-4">
+                        <h4 class="font-bold text-slate-800 text-sm">تغییر شماره پشتیبانی ۲۴ ساعته</h4>
+                        <input type="text" id="setting-support-phone" class="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none">
+                        <button onclick="updateSupportPhone()" class="bg-slate-900 text-white text-xs font-bold px-4 py-2 rounded-xl">ذخیره شماره پشتیبانی</button>
+                    </div>
+
+                    <div class="bg-slate-50 border border-slate-200 p-4 rounded-2xl space-y-4">
+                        <h4 class="font-bold text-slate-800 text-sm">تغییر رمز عبور مدیریت</h4>
+                        <input type="password" id="setting-new-admin-pass" placeholder="رمز عبور جدید" class="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none">
+                        <button onclick="updateAdminPassword()" class="bg-slate-900 text-white text-xs font-bold px-4 py-2 rounded-xl">تغییر رمز مدیر</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cart Modal -->
+    <div id="cart-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hide">
+        <div class="bg-white rounded-3xl max-w-lg w-full max-h-[85vh] flex flex-col shadow-2xl relative">
+            <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center">
+                <h3 class="font-bold text-lg text-slate-800">سبد خرید شما</h3>
+                <button onclick="closeCartModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-xl"></i></button>
+            </div>
+            <div id="cart-items-container" class="p-6 overflow-y-auto flex-grow space-y-4"></div>
+            <div class="p-6 border-t border-slate-100 bg-slate-50 rounded-b-3xl space-y-4">
+                <div class="flex justify-between items-center text-sm font-bold">
+                    <span>مبلغ قابل پرداخت:</span>
+                    <span id="cart-total-price" class="text-sky-600 text-lg">۰ تومان</span>
+                </div>
+                <button onclick="proceedToCheckout()" class="w-full bg-sky-600 hover:bg-sky-700 text-white font-bold py-3 rounded-xl transition shadow-lg shadow-sky-500/30">تایید و پرداخت آنلاین امن</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Checkout / Payment Modal -->
+    <div id="checkout-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hide">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl relative text-center space-y-4">
+            <div class="w-16 h-16 bg-sky-100 text-sky-600 rounded-2xl flex items-center justify-center mx-auto text-2xl"><i class="fa-solid fa-credit-card"></i></div>
+            <h3 class="text-lg font-bold text-slate-800">درگاه پرداخت امن بانکی</h3>
+            <p class="text-xs text-slate-500">در حال انتقال به شبیه‌ساز درگاه پرداخت معتبر...</p>
+            <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 text-right space-y-2 text-xs">
+                <div class="flex justify-between"><span class="text-slate-500">شماره کارت:</span><span class="font-mono font-bold">6037 •••• •••• 1300</span></div>
+                <div class="flex justify-between"><span class="text-slate-500">درگاه:</span><span class="font-bold text-sky-600">پلاس پی (تضمین امنیت)</span></div>
+            </div>
+            <button onclick="completePaymentSimulation()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl transition shadow-lg shadow-emerald-500/30">پرداخت موفق و دریافت کد رهگیری</button>
+        </div>
+    </div>
+
+    <!-- Order Success Modal -->
+    <div id="success-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hide">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl relative text-center space-y-4">
+            <div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center mx-auto text-3xl"><i class="fa-solid fa-circle-check"></i></div>
+            <h3 class="text-xl font-bold text-slate-800">سفارش شما با موفقیت ثبت شد!</h3>
+            <p class="text-xs text-slate-500">اطلاعات سفارش و نام محصول سفارشی شما به صورت خودکار به مدیریت جهت ارسال ارسال شد.</p>
+            <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-1">
+                <span class="text-xs text-slate-400">کد رهگیری کاملاً امن:</span>
+                <p id="success-tracking-code" class="text-lg font-mono font-black text-sky-600 tracking-wider">PLV-9843210</p>
+            </div>
+            <button onclick="closeSuccessModal()" class="w-full bg-slate-900 text-white font-bold py-3 rounded-xl transition">بازگشت به فروشگاه</button>
+        </div>
+    </div>
+
+    <!-- Product Detail Modal -->
+    <div id="product-detail-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hide">
+        <div class="bg-white rounded-3xl max-w-lg w-full max-h-[90vh] flex flex-col shadow-2xl relative overflow-hidden">
+            <button onclick="closeProductDetail()" class="absolute left-5 top-5 z-10 bg-white/80 backdrop-blur-md w-9 h-9 rounded-full flex items-center justify-center text-slate-700 hover:bg-white shadow"><i class="fa-solid fa-xmark text-lg"></i></button>
+            <div id="detail-modal-content" class="p-6 overflow-y-auto space-y-4"></div>
+        </div>
+    </div>
+
+    <script>
+        // State
+        let storeConfig = JSON.parse(localStorage.getItem('storeConfig')) || {
+            name: 'فروشگاه پلاس',
+            supportPhone: '09120000000',
+            adminPass: 'Arshia.t1300'
+        };
+
+        let products = JSON.parse(localStorage.getItem('storeProducts')) || [];
+        let users = JSON.parse(localStorage.getItem('storeUsers')) || [];
+        let orders = JSON.parse(localStorage.getItem('storeOrders')) || [];
+        let cart = [];
+        let currentUser = JSON.parse(localStorage.getItem('currentUser')) || null;
+        let currentFilter = 'all';
+        let authMode = 'login'; // 'login' or 'signup'
+
+        // Init
+        window.onload = function() {
+            applyConfig();
+            renderProducts();
+            updateNavbarAuth();
+            checkRememberedUser();
+        };
+
+        function applyConfig() {
+            document.getElementById('page-title').innerText = storeConfig.name;
+            document.getElementById('store-brand-name').innerText = storeConfig.name;
+            document.getElementById('hero-title').innerText = `به ${storeConfig.name} خوش آمدید`;
+            document.getElementById('support-phone-display').innerText = storeConfig.supportPhone;
+            document.getElementById('setting-store-name').value = storeConfig.name;
+            document.getElementById('setting-support-phone').value = storeConfig.supportPhone;
+        }
+
+        // Render Products
+        function renderProducts() {
+            const grid = document.getElementById('products-grid');
+            const query = document.getElementById('search-input').value.toLowerCase();
+            grid.innerHTML = '';
+
+            const filtered = products.filter(p => {
+                const matchesQuery = p.name.toLowerCase().includes(query) || p.desc.toLowerCase().includes(query);
+                const matchesFilter = currentFilter === 'all' || p.type === currentFilter;
+                return matchesQuery && matchesFilter;
+            });
+
+            if (filtered.length === 0) {
+                grid.innerHTML = `<div class="col-span-full text-center py-12 text-slate-400 text-sm">هیچ محصولی یافت نشد. از طریق پنل مدیریت محصول اضافه کنید.</div>`;
+                return;
+            }
+
+            filtered.forEach(p => {
+                const isPremium = p.type === 'premium';
+                grid.innerHTML += `
+                    <div class="bg-white rounded-3xl border border-slate-200/80 shadow-sm hover:shadow-md transition overflow-hidden flex flex-col justify-between">
+                        <div>
+                            <div class="relative h-48 bg-slate-100 overflow-hidden cursor-pointer" onclick="openProductDetail('${p.id}')">
+                                <img src="${p.image}" alt="${p.name}" class="w-full h-full object-cover hover:scale-105 transition duration-300">
+                                ${isPremium ? '<span class="absolute top-3 right-3 bg-amber-500 text-white text-xs font-bold px-3 py-1 rounded-xl shadow"><i class="fa-solid fa-crown ml-1"></i>پرمیوم</span>' : ''}
+                            </div>
+                            <div class="p-4 space-y-2">
+                                <h4 class="font-bold text-slate-800 text-sm cursor-pointer hover:text-sky-600" onclick="openProductDetail('${p.id}')">${p.name}</h4>
+                                <p class="text-xs text-slate-500 line-clamp-2">${p.desc}</p>
+                            </div>
+                        </div>
+                        <div class="p-4 pt-0 flex justify-between items-center">
+                            <div>
+                                <span class="text-xs text-slate-400 block">موجودی: ${p.stock} عدد</span>
+                                <span class="text-sky-600 font-black text-sm">${Number(p.price).toLocaleString()} تومان</span>
+                            </div>
+                            <button onclick="addToCart('${p.id}')" class="bg-sky-50 hover:bg-sky-600 text-sky-600 hover:text-white px-3 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5">
+                                <i class="fa-solid fa-cart-plus"></i> خرید
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function setFilter(type) {
+            currentFilter = type;
+            ['all', 'normal', 'premium'].forEach(t => {
+                const btn = document.getElementById(`filter-${t}`);
+                if (t === type) {
+                    btn.className = t === 'premium' ? 'px-4 py-2 rounded-xl text-sm font-bold bg-amber-500 text-white shadow-sm transition' : 'px-4 py-2 rounded-xl text-sm font-bold bg-sky-600 text-white shadow-sm transition';
+                } else {
+                    btn.className = 'px-4 py-2 rounded-xl text-sm font-bold bg-white text-slate-600 hover:bg-slate-100 border border-slate-200 transition';
+                }
+            });
+            renderProducts();
+        }
+
+        // Product Details Modal
+        function openProductDetail(id) {
+            const p = products.find(item => item.id == id);
+            if (!p) return;
+            const content = document.getElementById('detail-modal-content');
+            content.innerHTML = `
+                <img src="${p.image}" class="w-full h-64 object-cover rounded-2xl">
+                <div class="space-y-2">
+                    <span class="text-xs font-bold px-3 py-1 rounded-xl ${p.type === 'premium' ? 'bg-amber-100 text-amber-700' : 'bg-sky-100 text-sky-700'}">${p.type === 'premium' ? 'محصول پرمیوم' : 'محصول معمولی'}</span>
+                    <h3 class="text-lg font-bold text-slate-800">${p.name}</h3>
+                    <p class="text-sm text-slate-600 leading-relaxed">${p.desc}</p>
+                    <div class="flex justify-between items-center pt-4 border-t border-slate-100">
+                        <div>
+                            <span class="text-xs text-slate-400 block">موجودی انبار: ${p.stock} عدد</span>
+                            <span class="text-xl font-black text-sky-600">${Number(p.price).toLocaleString()} تومان</span>
+                        </div>
+                        <button onclick="addToCart('${p.id}'); closeProductDetail();" class="bg-sky-600 hover:bg-sky-700 text-white px-5 py-2.5 rounded-xl text-xs font-bold transition shadow-md">افزودن به سبد خرید</button>
+                    </div>
+                </div>
+            `;
+            document.getElementById('product-detail-modal').classList.remove('hide');
+        }
+        function closeProductDetail() { document.getElementById('product-detail-modal').classList.add('hide'); }
+
+        // Auth Modals & Logic
+        function openAuthModal() {
+            authMode = 'login';
+            updateAuthModalUI();
+            document.getElementById('auth-error-box').classList.add('hide');
+            document.getElementById('auth-form').reset();
+            document.getElementById('auth-modal').classList.remove('hide');
+        }
+        function closeAuthModal() { document.getElementById('auth-modal').classList.add('hide'); }
+
+        function toggleAuthMode() {
+            authMode = authMode === 'login' ? 'signup' : 'login';
+            updateAuthModalUI();
+        }
+
+        function updateAuthModalUI() {
+            const title = document.getElementById('auth-modal-title');
+            const submitBtn = document.getElementById('auth-submit-btn');
+            const switchText = document.getElementById('auth-switch-text');
+            const switchBtn = document.getElementById('auth-switch-btn');
+            const extraField = document.getElementById('auth-extra-field');
+
+            if (authMode === 'login') {
+                title.innerText = 'ورود به حساب کاربری';
+                submitBtn.innerText = 'ورود به حساب';
+                switchText.innerText = 'حساب کاربری ندارید؟';
+                switchBtn.innerText = 'ثبت‌نام کنید';
+                extraField.classList.add('hide');
+            } else {
+                title.innerText = 'ثبت‌نام در فروشگاه';
+                submitBtn.innerText = 'ثبت‌نام و ایجاد حساب';
+                switchText.innerText = 'قبلاً ثبت‌نام کرده‌ید؟';
+                switchBtn.innerText = 'وارد شوید';
+                extraField.classList.remove('hide');
+            }
+        }
+
+        function sendVerificationCode() {
+            alert('کد تایید شبیه‌سازی‌شده (۵ رقمی): 13009');
+        }
+
+        function handleAuthSubmit(e) {
+            e.preventDefault();
+            const username = document.getElementById('auth-username').value.trim();
+            const password = document.getElementById('auth-password').value.trim();
+            const errorBox = document.getElementById('auth-error-box');
+
+            if (authMode === 'signup') {
+                const existing = users.find(u => u.username === username);
+                if (existing) {
+                    errorBox.innerText = 'این نام کاربری قبلاً ثبت‌نام کرده است.';
+                    errorBox.classList.remove('hide');
+                    return;
+                }
+                const newUser = { username, password, date: new Date().toLocaleDateString('fa-IR') };
+                users.push(newUser);
+                localStorage.setItem('storeUsers', JSON.stringify(users));
+                currentUser = newUser;
+                alert('ثبت‌نام با موفقیت انجام شد و وارد حساب شدید.');
+            } else {
+                const user = users.find(u => u.username === username && u.password === password);
+                if (!user) {
+                    errorBox.innerText = 'نام کاربری یا رمز عبور اشتباه است.';
+                    errorBox.classList.remove('hide');
+                    return;
+                }
+                currentUser = user;
+            }
+
+            if (document.getElementById('remember-me').checked) {
+                localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            }
+
+            closeAuthModal();
+            updateNavbarAuth();
+        }
+
+        function handleForgotPassword() {
+            const username = prompt('لطفاً نام کاربری خود را وارد کنید تا راهنمایی بازیابی ارسال شود:');
+            if (!username) return;
+            const user = users.find(u => u.username === username);
+            if (user) {
+                alert(`رمز عبور حساب شما: ${user.password}`);
+            } else {
+                alert('کاربری با این مشخصات یافت نشد.');
+            }
+        }
+
+        function updateNavbarAuth() {
+            const btn = document.getElementById('nav-auth-btn');
+            if (currentUser) {
+                btn.innerHTML = `<i class="fa-solid fa-user ml-1"></i> ${currentUser.username} (خروج)`;
+                btn.onclick = logoutUser;
+            } else {
+                btn.innerHTML = 'ورود / ثبت‌نام';
+                btn.onclick = openAuthModal;
+            }
+        }
+
+        function logoutUser() {
+            currentUser = null;
+            localStorage.removeItem('currentUser');
+            updateNavbarAuth();
+            alert('از حساب خود خارج شدید.');
+        }
+
+        function checkRememberedUser() {
+            const saved = localStorage.getItem('currentUser');
+            if (saved) {
+                currentUser = JSON.parse(saved);
+                updateNavbarAuth();
+            }
+        }
+
+        // Cart & Checkout
+        function addToCart(id) {
+            const product = products.find(p => p.id == id);
+            if (!product || product.stock <= 0) {
+                alert('محصول ناموجود است.');
+                return;
+            }
+            const exist = cart.find(item => item.id == id);
+            if (exist) {
+                if (exist.qty < product.stock) exist.qty++;
+                else alert('موجودی انبار کافی نیست.');
+            } else {
+                cart.push({ ...product, qty: 1 });
+            }
+            updateCartBadge();
+        }
+
+        function updateCartBadge() {
+            const total = cart.reduce((sum, item) => sum + item.qty, 0);
+            document.getElementById('cart-badge').innerText = total;
+        }
+
+        function openCartModal() {
+            const container = document.getElementById('cart-items-container');
+            container.innerHTML = '';
+            if (cart.length === 0) {
+                container.innerHTML = '<p class="text-center text-slate-400 py-8 text-sm">سبد خرید شما خالی است.</p>';
+                document.getElementById('cart-total-price').innerText = '۰ تومان';
+                document.getElementById('cart-modal').classList.remove('hide');
+                return;
+            }
+
+            let totalPrice = 0;
+            cart.forEach(item => {
+                let itemTotal = item.price * item.qty;
+                if (item.type === 'premium') itemTotal = itemTotal * 0.9; // 10% discount for premium
+                totalPrice += itemTotal;
+
+                container.innerHTML += `
+                    <div class="flex justify-between items-center bg-slate-50 p-3 rounded-2xl border border-slate-200">
+                        <div class="flex items-center gap-3">
+                            <img src="${item.image}" class="w-12 h-12 object-cover rounded-xl">
+                            <div>
+                                <h4 class="font-bold text-xs text-slate-800">${item.name}</h4>
+                                <span class="text-xs text-sky-600 font-bold">${Number(item.price).toLocaleString()} تومان</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button onclick="changeQty('${item.id}', -1)" class="w-7 h-7 bg-white rounded-lg border font-bold text-xs">-</button>
+                            <span class="text-xs font-bold">${item.qty}</span>
+                            <button onclick="changeQty('${item.id}', 1)" class="w-7 h-7 bg-white rounded-lg border font-bold text-xs">+</button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            document.getElementById('cart-total-price').innerText = `${Number(Math.round(totalPrice)).toLocaleString()} تومان`;
+            document.getElementById('cart-modal').classList.remove('hide');
+        }
+
+        function closeCartModal() { document.getElementById('cart-modal').classList.add('hide'); }
+
+        function changeQty(id, delta) {
+            const item = cart.find(i => i.id == id);
+            if (!item) return;
+            item.qty += delta;
+            if (item.qty <= 0) {
+                cart = cart.filter(i => i.id != id);
+            }
+            updateCartBadge();
+            openCartModal();
+        }
+
+        function proceedToCheckout() {
+            if (!currentUser) {
+                alert('برای ثبت سفارش و پرداخت لطفاً ابتدا وارد حساب کاربری خود شوید.');
+                closeCartModal();
+                openAuthModal();
+                return;
+            }
+            if (cart.length === 0) return;
+            closeCartModal();
+            document.getElementById('checkout-modal').classList.remove('hide');
+        }
+
+        let lastTrackingCode = '';
+        function completePaymentSimulation() {
+            document.getElementById('checkout-modal').classList.add('hide');
+            lastTrackingCode = 'PLV-' + Math.floor(100000 + Math.random() * 900000);
+
+            // Save order & dispatch to admin
+            const newOrder = {
+                id: lastTrackingCode,
+                user: currentUser.username,
+                items: [...cart],
+                date: new Date().toLocaleString('fa-IR'),
+                status: 'در حال بررسی توسط مدیریت'
+            };
+            orders.push(newOrder);
+            localStorage.setItem('storeOrders', JSON.stringify(orders));
+
+            // Reduce stock
+            cart.forEach(ci => {
+                const prod = products.find(p => p.id == ci.id);
+                if (prod) prod.stock -= ci.qty;
+            });
+            localStorage.setItem('storeProducts', JSON.stringify(products));
+
+            cart = [];
+            updateCartBadge();
+            renderProducts();
+
+            document.getElementById('success-tracking-code').innerText = lastTrackingCode;
+            document.getElementById('success-modal').classList.remove('hide');
+        }
+
+        function closeSuccessModal() { document.getElementById('success-modal').classList.add('hide'); }
+
+        // Admin Panel Logic
+        function openAdminLoginModal() { document.getElementById('admin-login-modal').classList.remove('hide'); }
+        function closeAdminLoginModal() { document.getElementById('admin-login-modal').classList.add('hide'); }
+
+        function handleAdminLoginSubmit(e) {
+            e.preventDefault();
+            const pass = document.getElementById('admin-password-input').value;
+            if (pass === storeConfig.adminPass) {
+                closeAdminLoginModal();
+                document.getElementById('admin-panel-modal').classList.remove('hide');
+                renderAdminProducts();
+                renderAdminOrders();
+                renderAdminUsers();
+            } else {
+                alert('رمز عبور مدیریت اشتباه است.');
+            }
+        }
+        function closeAdminPanel() { document.getElementById('admin-panel-modal').classList.add('hide'); }
+
+        function switchAdminTab(tab) {
+            ['products', 'orders', 'users', 'settings'].forEach(t => {
+                document.getElementById(`admin-content-${t}`).classList.add('hide');
+                document.getElementById(`adm-tab-${t}`).className = 'py-3 px-4 font-bold text-sm text-slate-500 whitespace-nowrap';
+            });
+            document.getElementById(`admin-content-${tab}`).classList.remove('hide');
+            document.getElementById(`adm-tab-${tab}`).className = 'py-3 px-4 font-bold text-sm border-b-2 border-sky-600 text-sky-600 whitespace-nowrap';
+        }
+
+        function handleAddProduct(e) {
+            e.preventDefault();
+            const newProd = {
+                id: Date.now(),
+                name: document.getElementById('p-name').value,
+                price: Number(document.getElementById('p-price').value),
+                stock: Number(document.getElementById('p-stock').value),
+                image: document.getElementById('p-image').value,
+                type: document.getElementById('p-type').value,
+                desc: document.getElementById('p-desc').value
+            };
+            products.push(newProd);
+            localStorage.setItem('storeProducts', JSON.stringify(products));
+            e.target.reset();
+            renderAdminProducts();
+            renderProducts();
+            alert('محصول با موفقیت اضافه شد.');
+        }
+
+        function renderAdminProducts() {
+            const list = document.getElementById('admin-products-list');
+            list.innerHTML = '';
+            if (products.length === 0) {
+                list.innerHTML = '<p class="text-xs text-slate-400">هیچ محصولی ثبت نشده است.</p>';
+                return;
+            }
+            products.forEach(p => {
+                list.innerHTML += `
+                    <div class="flex justify-between items-center bg-slate-50 p-3 rounded-2xl border border-slate-200">
+                        <div class="flex items-center gap-3">
+                            <img src="${p.image}" class="w-10 h-10 object-cover rounded-xl">
+                            <div>
+                                <h5 class="font-bold text-xs text-slate-800">${p.name}</h5>
+                                <span class="text-[10px] text-slate-500">${Number(p.price).toLocaleString()} تومان | موجودی: ${p.stock}</span>
+                            </div>
+                        </div>
+                        <button onclick="deleteProduct('${p.id}')" class="bg-red-50 text-red-600 hover:bg-red-600 hover:text-white px-3 py-1.5 rounded-xl text-xs font-bold transition">حذف</button>
+                    </div>
+                `;
+            });
+        }
+
+        function deleteProduct(id) {
+            products = products.filter(p => p.id != id);
+            localStorage.setItem('storeProducts', JSON.stringify(products));
+            renderAdminProducts();
+            renderProducts();
+        }
+
+        function renderAdminOrders() {
+            const list = document.getElementById('admin-orders-list');
+            list.innerHTML = '';
+            if (orders.length === 0) {
+                list.innerHTML = '<p class="text-xs text-slate-400">هیچ سفارشی ثبت نشده است.</p>';
+                return;
+            }
+            orders.forEach(o => {
+                let itemsList = o.items.map(i => `${i.name} (تعداد: ${i.qty})`).join(', ');
+                list.innerHTML += `
+                    <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-2 text-xs">
+                        <div class="flex justify-between font-bold text-slate-800">
+                            <span>کد رهگیری: ${o.id}</span>
+                            <span class="text-sky-600">${o.date}</span>
+                        </div>
+                        <p class="text-slate-600">کاربر خریدار: <span class="font-bold">${o.user}</span></p>
+                        <p class="text-slate-600">محصولات سفارشی: <span class="font-bold text-slate-900">${itemsList}</span></p>
+                        <div class="pt-2 border-t border-slate-200 flex justify-between items-center">
+                            <span class="bg-amber-100 text-amber-700 px-2 py-1 rounded-lg font-bold">وضعیت: ${o.status}</span>
+                            <button onclick="fulfillOrder('${o.id}')" class="bg-emerald-600 text-white px-3 py-1.5 rounded-xl font-bold">ارسال شد به مشتری</button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function fulfillOrder(id) {
+            const ord = orders.find(o => o.id == id);
+            if (ord) {
+                ord.status = 'ارسال شده به مشتری';
+                localStorage.setItem('storeOrders', JSON.stringify(orders));
+                renderAdminOrders();
+                alert('وضعیت سفارش به ارسال شده تغییر یافت.');
+            }
+        }
+
+        function renderAdminUsers() {
+            const list = document.getElementById('admin-users-list');
+            list.innerHTML = '';
+            if (users.length === 0) {
+                list.innerHTML = '<p class="text-xs text-slate-400">هیچ کاربری ثبت‌نام نکرده است.</p>';
+                return;
+            }
+            users.forEach(u => {
+                list.innerHTML += `
+                    <div class="flex justify-between items-center bg-slate-50 p-3 rounded-2xl border border-slate-200 text-xs">
+                        <div>
+                            <span class="font-bold text-slate-800 block">نام کاربری: ${u.username}</span>
+                            <span class="text-[10px] text-slate-400">تاریخ ثبت‌نام: ${u.date}</span>
+                        </div>
+                        <span class="bg-sky-100 text-sky-700 px-3 py-1 rounded-xl font-bold">حساب معمولی/فعال</span>
+                    </div>
+                `;
+            });
+        }
+
+        function updateStoreName() {
+            const newName = document.getElementById('setting-store-name').value.trim();
+            if (!newName) return;
+            storeConfig.name = newName;
+            localStorage.setItem('storeConfig', JSON.stringify(storeConfig));
+            applyConfig();
+            alert('نام فروشگاه با موفقیت تغییر کرد.');
+        }
+
+        function updateSupportPhone() {
+            const newPhone = document.getElementById('setting-support-phone').value.trim();
+            if (!newPhone) return;
+            storeConfig.supportPhone = newPhone;
+            localStorage.setItem('storeConfig', JSON.stringify(storeConfig));
+            applyConfig();
+            alert('شماره پشتیبانی با موفقیت تغییر کرد.');
+        }
+
+        function updateAdminPassword() {
+            const newPass = document.getElementById('setting-new-admin-pass').value.trim();
+            if (!newPass) return;
+            storeConfig.adminPass = newPass;
+            localStorage.setItem('storeConfig', JSON.stringify(storeConfig));
+            document.getElementById('setting-new-admin-pass').value = '';
+            alert('رمز عبور مدیریت با موفقیت تغییر کرد.');
+        }
+    </script>
+</body>
+</html>
+       grid.innerHTML = filtered.map(item => `
+                <div class="bg-slate-800/40 border border-slate-700/60 hover:border-brand-500/50 rounded-3xl p-6 flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1 group">
+                    <div class="w-full h-44 bg-slate-950 rounded-2xl flex items-center justify-center p-4 mb-4 border border-slate-800/80 group-hover:bg-slate-900 transition-all">
+                        ${item.svg}
+                    </div>
+                    <div class="space-y-2">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-semibold px-2.5 py-1 bg-brand-500/10 text-brand-400 rounded-lg">${item.category}</span>
+                            <span class="text-sm font-black text-white">${item.price.toLocaleString('fa-IR')} تومان</span>
+                        </div>
+                        <h3 class="font-bold text-white text-base">${item.title}</h3>
+                    </div>
+                    <div class="pt-4 mt-4 border-t border-slate-700/50 flex gap-2">
+                        <button onclick="openCheckoutModal(${item.id})" class="flex-1 py-2.5 bg-brand-600 hover:bg-brand-500 text-white font-bold rounded-xl text-xs transition-all shadow-md">
+                            خرید & دریافت آنلاین
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // --- CHECKOUT & CARD PAYMENT SYSTEM ---
+        function openCheckoutModal(logoId) {
+            if (!state.currentUser) {
+                showToast('لطفا ابتدا وارد حساب کاربری شوید', 'error');
+                openAuthModal();
+                return;
+            }
+
+            const logo = state.logos.find(l => l.id === logoId);
+            if (!logo) return;
+
+            state.selectedCheckoutLogo = logo;
+            state.appliedPromo = null;
+
+            document.getElementById('checkout-logo-title').textContent = logo.title;
+            document.getElementById('checkout-logo-cat').textContent = logo.category;
+            document.getElementById('checkout-logo-preview').innerHTML = logo.svg;
+            document.getElementById('checkout-original-price').textContent = `${logo.price.toLocaleString('fa-IR')} تومان`;
+            document.getElementById('discount-row').classList.add('hidden');
+            document.getElementById('checkout-final-price').textContent = `${logo.price.toLocaleString('fa-IR')} تومان`;
+
+            updateBankInfoUI();
+            document.getElementById('checkout-modal').classList.remove('hidden');
+        }
+
+        function closeCheckoutModal() {
+            document.getElementById('checkout-modal').classList.add('hidden');
+        }
+
+        function updateBankInfoUI() {
+            document.getElementById('admin-bank-name').textContent = state.bankInfo.bankName;
+            document.getElementById('admin-card-number').textContent = state.bankInfo.cardNumber;
+            document.getElementById('admin-card-holder').textContent = state.bankInfo.holderName;
+        }
+
+        function copyCardNumber() {
+            const cardNum = state.bankInfo.cardNumber.replace(/-/g, '');
+            navigator.clipboard.writeText(cardNum);
+            showToast('شماره کارت با موفقیت کپی شد', 'success');
+        }
+
+        function applyPromoCode() {
+            const codeInput = document.getElementById('promo-code-input').value.trim().toUpperCase();
+            const promo = state.promos.find(p => p.code === codeInput);
+
+            if (!promo) {
+                showToast('کد تخفیف نامعتبر است', 'error');
+                return;
+            }
+
+            state.appliedPromo = promo;
+            const logo = state.selectedCheckoutLogo;
+            const discountAmt = (logo.price * promo.percent) / 100;
+            const finalPrice = logo.price - discountAmt;
+
+            document.getElementById('discount-row').classList.remove('hidden');
+            document.getElementById('checkout-discount-amount').textContent = `${discountAmt.toLocaleString('fa-IR')} تومان (${promo.percent}%)`;
+            document.getElementById('checkout-final-price').textContent = `${finalPrice.toLocaleString('fa-IR')} تومان`;
+
+            showToast(`کد تخفیف ${promo.percent} درصدی اعمال شد!`, 'success');
+        }
+
+        function handleCheckoutSubmit(e) {
+            e.preventDefault();
+            const refNo = document.getElementById('pay-ref').value;
+            const notes = document.getElementById('pay-notes').value;
+
+            const logo = state.selectedCheckoutLogo;
+            const discountPercent = state.appliedPromo ? state.appliedPromo.percent : 0;
+            const finalPrice = logo.price - (logo.price * discountPercent / 100);
+
+            const newOrder = {
+                id: 'ORD-' + Math.floor(100000 + Math.random() * 900000),
+                userId: state.currentUser.id,
+                userName: state.currentUser.fullname,
+                logoId: logo.id,
+                logoTitle: logo.title,
+                logoSvg: logo.svg,
+                price: finalPrice,
+                refNo: refNo,
+                notes: notes,
+                status: 'در حال بررسی پرداخت', // Pending confirmation
+                date: new Date().toLocaleDateString('fa-IR')
+            };
+
+            state.orders.unshift(newOrder);
+            localStorage.setItem('logoplus_orders', JSON.stringify(state.orders));
+
+            showToast('سفارش شما با موفقیت ثبت شد و فیش واریزی در حال بررسی توسط مدیریت می‌باشد.', 'success');
+            closeCheckoutModal();
+            switchTab('dashboard');
+        }
+
+        // --- USER DASHBOARD ---
+        function renderUserDashboard() {
+            if (!state.currentUser) return;
+
+            document.getElementById('user-profile-name').textContent = state.currentUser.fullname;
+            document.getElementById('user-profile-contact').textContent = `شناسه: ${state.currentUser.identifier}`;
+
+            const userOrders = state.orders.filter(o => o.userId === state.currentUser.id);
+            const container = document.getElementById('user-orders-list');
+
+            if (userOrders.length === 0) {
+                container.innerHTML = `<p class="text-xs text-slate-500 py-4">هنوز هیچ سفارشی ثبت نکرده‌اید.</p>`;
+                return;
+            }
+
+            container.innerHTML = userOrders.map(ord => `
+                <div class="bg-slate-900 border border-slate-700/60 p-4 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <div class="flex items-center gap-4">
+                        <div class="w-14 h-14 bg-slate-950 rounded-xl flex items-center justify-center p-2 border border-slate-800">
+                            ${ord.logoSvg}
+                        </div>
+                        <div>
+                            <h4 class="text-sm font-bold text-white">${ord.logoTitle}</h4>
+                            <div class="text-xs text-slate-400 mt-1">کد پیگیری: ${ord.refNo} | تاریخ: ${ord.date}</div>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span class="text-xs px-3 py-1 rounded-full font-bold ${ord.status === 'تایید شده' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-amber-500/10 text-amber-400 border border-amber-500/20'}">
+                            ${ord.status}
+                        </span>
+                        ${ord.status === 'تایید شده' ? `
+                            <button onclick="downloadLogoSvg('${encodeURIComponent(ord.logoSvg)}', '${ord.logoTitle}')" class="px-3 py-1.5 bg-brand-600 hover:bg-brand-500 text-white rounded-lg text-xs font-bold">
+                                <i class="fa-solid fa-download ml-1"></i> دانلود SVG
+                            </button>
+                        ` : ''}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function downloadLogoSvg(svgStr, filename) {
+            const decoded = decodeURIComponent(svgStr);
+            const blob = new Blob([decoded], { type: 'image/svg+xml' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${filename}.svg`;
+            a.click();
+            showToast('دانلود فایل SVG شروع شد', 'success');
+        }
+
+        // --- MOCKUP STUDIO ---
+        function populateMockupSelect() {
+            const select = document.getElementById('mockup-logo-select');
+            select.innerHTML = state.logos.map(l => `<option value="${l.id}">${l.title}</option>`).join('');
+        }
+
+        function selectMockupType(type) {
+            state.activeMockupType = type;
+            document.querySelectorAll('.mockup-btn').forEach(btn => {
+                if (btn.dataset.type === type) {
+                    btn.classList.add('border-brand-500', 'text-white');
+                    btn.classList.remove('border-slate-700', 'text-slate-400');
+                } else {
+                    btn.classList.remove('border-brand-500', 'text-white');
+                    btn.classList.add('border-slate-700', 'text-slate-400');
+                }
+            });
+            updateMockupPreview();
+        }
+
+        function updateMockupPreview() {
+            const logoId = parseInt(document.getElementById('mockup-logo-select').value) || state.logos[0].id;
+            const logo = state.logos.find(l => l.id === logoId);
+            const scale = document.getElementById('mockup-scale').value;
+            const canvas = document.getElementById('mockup-canvas');
+
+            if (!logo) return;
+
+            let bgStyle = "bg-slate-900";
+            if (state.activeMockupType === 'card') bgStyle = "bg-gradient-to-tr from-slate-900 to-slate-800 border-2 border-slate-700";
+            if (state.activeMockupType === 'sign') bgStyle = "bg-slate-950 border-4 border-amber-500/40 shadow-inner";
+            if (state.activeMockupType === 'tshirt') bgStyle = "bg-slate-800 border-2 border-slate-700 rounded-3xl";
+            if (state.activeMockupType === 'mug') bgStyle = "bg-gradient-to-r from-slate-800 via-slate-700 to-slate-900 rounded-3xl";
+
+            canvas.className = `relative w-full max-w-md h-80 shadow-2xl overflow-hidden flex flex-col items-center justify-center transition-all ${bgStyle}`;
+            
+            canvas.innerHTML = `
+                <div style="transform: scale(${scale / 100})" class="transition-all duration-150 flex flex-col items-center gap-2">
+                    ${logo.svg}
+                    <span class="text-xs font-black tracking-widest text-slate-300 uppercase">${logo.title}</span>
+                </div>
+            `;
+        }
+
+        // --- REVIEWS ---
+        function renderReviews() {
+            const container = document.getElementById('reviews-list');
+            container.innerHTML = state.reviews.map(r => `
+                <div class="bg-slate-800/40 border border-slate-700/60 p-6 rounded-3xl space-y-3">
+                    <div class="flex items-center justify-between">
+                        <span class="font-bold text-white text-sm">${r.author}</span>
+                        <span class="text-amber-400 text-xs">${'★'.repeat(r.rating)}</span>
+                    </div>
+                    <p class="text-xs text-slate-300 leading-relaxed">${r.text}</p>
+                </div>
+            `).join('');
+        }
+
+        function openAddReviewModal() {
+            document.getElementById('review-modal').classList.remove('hidden');
+        }
+        function closeAddReviewModal() {
+            document.getElementById('review-modal').classList.add('hidden');
+        }
+
+        function handleReviewSubmit(e) {
+            e.preventDefault();
+            const author = document.getElementById('rev-author').value;
+            const rating = parseInt(document.getElementById('rev-rating').value);
+            const text = document.getElementById('rev-text').value;
+
+            state.reviews.unshift({ id: Date.now(), author, rating, text });
+            localStorage.setItem('logoplus_reviews', JSON.stringify(state.reviews));
+
+            showToast('دیدگاه شما ثبت شد', 'success');
+            closeAddReviewModal();
+            renderReviews();
+        }
+
+        // --- ADMIN PANEL MANAGEMENT ---
+        function openAdminModal() {
+            document.getElementById('admin-modal').classList.remove('hidden');
+        }
+        function closeAdminModal() {
+            document.getElementById('admin-modal').classList.add('hidden');
+        }
+
+        function verifyAdminPassword() {
+            const pass = document.getElementById('admin-pass-input').value;
+            if (pass === ADMIN_PASS) {
+                document.getElementById('admin-login-step').classList.add('hidden');
+                document.getElementById('admin-dashboard-step').classList.remove('hidden');
+                showToast('ورود مدیریت با موفقیت انجام شد', 'success');
+                renderAdminOrders();
+                renderAdminPromos();
+                
+                // Prefill card info
+                document.getElementById('edit-bank-name').value = state.bankInfo.bankName;
+                document.getElementById('edit-card-number').value = state.bankInfo.cardNumber;
+                document.getElementById('edit-card-holder').value = state.bankInfo.holderName;
+            } else {
+                showToast('رمز عبور مدیریت اشتباه است!', 'error');
+            }
+        }
+
+        function adminLogout() {
+            document.getElementById('admin-login-step').classList.remove('hidden');
+            document.getElementById('admin-dashboard-step').classList.add('hidden');
+            document.getElementById('admin-pass-input').value = '';
+        }
+
+        function switchAdminTab(sec) {
+            ['orders', 'card', 'addlogo', 'promos'].forEach(s => {
+                document.getElementById(`admin-sec-${s}`).classList.add('hidden');
+                const btn = document.getElementById(`adm-tab-${s}`);
+                btn.className = "px-4 py-2 rounded-xl text-xs font-bold bg-slate-800 text-slate-400 hover:text-white";
+            });
+
+            document.getElementById(`admin-sec-${sec}`).classList.remove('hidden');
+            document.getElementById(`adm-tab-${sec}`).className = "px-4 py-2 rounded-xl text-xs font-bold bg-brand-600 text-white";
+        }
+
+        function saveBankSettings(e) {
+            e.preventDefault();
+            state.bankInfo.bankName = document.getElementById('edit-bank-name').value;
+            state.bankInfo.cardNumber = document.getElementById('edit-card-number').value;
+            state.bankInfo.holderName = document.getElementById('edit-card-holder').value;
+
+            localStorage.setItem('logoplus_bank', JSON.stringify(state.bankInfo));
+            updateBankInfoUI();
+            showToast('اطلاعات کارت جدید ذخیره شد', 'success');
+        }
+
+        function renderAdminOrders() {
+            const container = document.getElementById('admin-orders-list');
+            if (state.orders.length === 0) {
+                container.innerHTML = `<p class="text-xs text-slate-500">هیچ سفارشی موجود نیست.</p>`;
+                return;
+            }
+
+            container.innerHTML = state.orders.map(o => `
+                <div class="bg-slate-800/60 p-4 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4 text-xs">
+                    <div>
+                        <div class="font-bold text-white">${o.logoTitle} | خریدار: ${o.userName}</div>
+                        <div class="text-slate-400 mt-1">کد پیگیری واریز: <span class="text-brand-400 font-mono">${o.refNo}</span> | مبلغ: ${o.price.toLocaleString('fa-IR')} تومان</div>
+                        ${o.notes ? `<div class="text-slate-500 italic mt-0.5">توضیحات: ${o.notes}</div>` : ''}
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button onclick="approveOrder('${o.id}')" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg font-bold">
+                            تایید و فعال‌سازی دانلود
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function approveOrder(orderId) {
+            const order = state.orders.find(o => o.id === orderId);
+            if (order) {
+                order.status = 'تایید شده';
+                localStorage.setItem('logoplus_orders', JSON.stringify(state.orders));
+                renderAdminOrders();
+                showToast('سفارش تایید شد و لینک دانلود برای کاربر فعال شد', 'success');
+            }
+        }
+
+        function handleAddLogo(e) {
+            e.preventDefault();
+            const title = document.getElementById('new-logo-title').value;
+            const category = document.getElementById('new-logo-cat').value;
+            const price = parseInt(document.getElementById('new-logo-price').value);
+            let svg = document.getElementById('new-logo-svg').value;
+
+            if (!svg.trim()) {
+                svg = `<svg viewBox="0 0 100 100" class="w-20 h-20 text-brand-500 fill-current"><polygon points="50,15 90,85 10,85" fill="none" stroke="currentColor" stroke-width="6"/></svg>`;
+            }
+
+            const newLogo = { id: Date.now(), title, category, price, svg };
+            state.logos.unshift(newLogo);
+            localStorage.setItem('logoplus_logos', JSON.stringify(state.logos));
+
+            showToast('لوگوی جدید اضافه شد', 'success');
+            renderLogos();
+            populateMockupSelect();
+        }
+
+        function handleAddPromo(e) {
+            e.preventDefault();
+            const code = document.getElementById('new-promo-code').value.toUpperCase();
+            const percent = parseInt(document.getElementById('new-promo-percent').value);
+
+            state.promos.unshift({ code, percent });
+            localStorage.setItem('logoplus_promos', JSON.stringify(state.promos));
+
+            showToast(`کد تخفیف ${code} ثبت شد`, 'success');
+            renderAdminPromos();
+        }
+
+        function renderAdminPromos() {
+            const container = document.getElementById('admin-promos-list');
+            container.innerHTML = state.promos.map(p => `
+                <div class="bg-slate-800 p-3 rounded-xl flex items-center justify-between text-xs">
+                    <span class="font-bold text-brand-400 font-mono">${p.code}</span>
+                    <span class="text-slate-300">${p.percent}% تخفیف</span>
+                </div>
+            `).join('');
+        }
+    </script>
+</body>
+</html>
+```
